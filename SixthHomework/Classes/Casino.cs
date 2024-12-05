@@ -1,63 +1,170 @@
-﻿using SixthHomework.Classes;
-using System.Collections.Generic;
-using System.Data;
-using System.Dynamic;
-
-namespace SixthHomework
+﻿using System.Globalization;
+namespace ArtTask
 {
-    abstract class Casino
-    { 
-        #region Fields
-        private string casinoName = "Default Casino";
-        private User user;
-        private int gamesAmount = 1;
-        private bool IsUserMinor = true;
-        private int restrictionAge = 0;
+    enum City
+    {
+        Казань,
+        Москва,
+        FarFromCasino
+    }
+    abstract public class Casino
+    {
+        #region Field;
+        private string name = string.Empty;
+        public BankAccount? account = null;
+        private DateTime birthDate = DateTime.Now;
+        private City residence;
+        private string bankIdentificator = "unknown";
         #endregion
-        #region Constructor Methods
+        #region Properties
+        
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+            }
+        }
+        public City Residence
+        {
+            get
+            {
+                return residence;
+            }
+            set
+            {
+                residence = value;
+            }
+        }
 
+        public DateTime BirthDate
+        {
+            get
+            {
+                return birthDate;
+            }
+            set
+            {
+                birthDate = value;
+            }
+        }
         #endregion
         #region Call Methods
-        public void Output()
+        public void Input()
         {
-            Console.WriteLine($"Здравствуйте {user.Name}");
-            IsUserMinor = user.IsUserMinor(restrictionAge);
-            if (IsUserMinor)
+
+            Console.WriteLine("Укажите Дату Рождения");
+            EnterBirthDate(Console.ReadLine()!);
+            int age = Age();
+            if (age < 18)
             {
-                Console.WriteLine("Вы несовершеннолетни");
+                Console.WriteLine("Вы не можете здесь находиться");
+
             }
             else
             {
-                Console.WriteLine("Предлагаем вам сыграть в одну из наших игр");
-                Help();
-                Console.WriteLine($"Укажите номер игры от 1 до {gamesAmount}, либо что-то другое если не хотите играть");
-                bool flag = true;
-                while(flag && int.TryParse(Console.ReadLine(),out int gameNumber))
-                {
-                    if(gameNumber == 1)
-                    {
-
-                    }
-                    else
-                    {
-                        flag = false;
-                    }
-                }
+                Console.WriteLine("Здравствуйте, укажите Имя");
+                name = Console.ReadLine()!;
+                Console.WriteLine("Создадим Банковский аккаунт");
+                BankAccount Account = new BankAccount();
+                Account.Input();
+                this.account = Account;
+                bankIdentificator = this.account.Identificator;
+                Console.WriteLine("Укажите Город");
+                InputResidence(Console.ReadLine()!);
             }
         }
-        private void Help()
+        private void InputResidence(string city)
         {
-            Console.WriteLine("1) Игра 50% удвой деньги");
-        }
-        private void DoubleMoney()
-        {
-            if (user.Balance <= 0)
+            if (city.ToLower().Replace(" ", string.Empty) == "казань")
             {
-                Console.WriteLine("Недостаточно средств");
+                residence = (City)0;
             }
-            Console.WriteLine($"У вас {user.Balance}");
-            Console.WriteLine("");
+            else if (city.ToLower().Replace(" ", string.Empty) == "москва")
+            {
+                residence = (City)1;
+            }
+            else
+            {
+                Console.WriteLine("Вы не можете играть в казино");
+                residence = (City)2;
+            }
+        }
+        private void EnterBirthDate(string BirthDateruRuFromat)
+        {
+            CultureInfo ruRU = CultureInfo.CreateSpecificCulture("ru-RU");
+            if (DateTime.TryParseExact(BirthDateruRuFromat, "dd.MM.yyyy", ruRU, DateTimeStyles.AllowWhiteSpaces, out DateTime dateValue))
+            {
+                birthDate = dateValue;
+            }
+        }
+        public void Output()
+        {
+            Console.WriteLine($"Здравствуйте, {name}");
+
+            if (account!.IsExpired())
+            {
+                Console.WriteLine("Ваша карта больше не работает");
+            }
+            else if (account.Balance == account.DefaultBalance)
+            {
+                Console.WriteLine($"Ваш баланс {account.Balance}");
+            }
+            else 
+            {
+                Console.WriteLine("Ваш баланс неопределен");
+            }
+        }
+        public void Play()
+        {
+            int age = Age();
+            if (account!.IsExpired())
+            {
+                Console.WriteLine("Ваша карта больше не работает");
+            }
+            else if (age < 18)
+            {
+                Console.WriteLine("Вам нельзя играть");
+            }
+            else
+            {
+                Console.WriteLine("Нужно поиграть!");
+                Game1();
+                Game2();
+            }
         }
         #endregion
+        #region Game Methods
+        private void Game1()
+        {
+            account!.Balance = 0;
+            Console.WriteLine("Победа Победа ваш баланс 0!!");
+        }
+        private void Game2() 
+        {
+            account!.Balance = 33312312;
+            Console.Write("Деньги не главное! ");
+            Console.WriteLine(account.Balance);
+        }
+        #endregion
+        #region Computing Methods
+        private int Age()
+        {
+            int nowInteger = int.Parse(DateTime.Now.ToString("yyyyMMhh"));
+            int birthInteger = int.Parse(birthDate.ToString("yyyyMMhh"));
+            return (nowInteger - birthInteger) / 10000;
+        }
+        #endregion
+    }
+    public class KazanCasino : Casino
+    {
+        new public void Output()
+        {
+            
+        }
     }
 }

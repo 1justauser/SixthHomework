@@ -1,9 +1,9 @@
-﻿//using SixthHomework.Classes;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
-namespace SixthHomework {
-    class ArtTask 
+namespace ArtTask
+{
+    class SixthHomework
     {
         static void Unicode_Utf8()
         {

@@ -40,10 +40,10 @@
             userNew.Input();
             userNew.Output();
         }
-        public void Output() 
+        public void Output()
         {
-            if (bankAccountType == (BankAccountType)2) 
-            { 
+            if (bankAccountType == (BankAccountType)2)
+            {
                 Console.WriteLine("Тип и баланс не определены");
             }
             else
@@ -70,15 +70,15 @@
                 Console.WriteLine("Ваш тип счета неопределен, баланс неопределен");
                 balance = defaultBalance;
             }
-            else 
-            { 
+            else
+            {
                 Console.WriteLine("Укажите баланс");
                 InputBalance(Console.ReadLine()!);
             }
         }
         private void InputBalance(string stringBalance)
         {
-            if(!decimal.TryParse(stringBalance, out balance))
+            if (!decimal.TryParse(stringBalance, out balance))
             {
                 Console.WriteLine("Ошибка вы неправильно указали баланс, он не определен");
                 balance = defaultBalance;
